@@ -1,0 +1,74 @@
+import remeras.*
+import empresas.*
+import pedidos.*
+
+describe "tests remeras"{
+	
+	const nike = new Empresa ()
+	
+	const sucursalFlores = new Sucursal (cantidadMinDescuento = 10, empresa = nike) 	//flores 
+	const sucursalAvellaneda = new Sucursal (cantidadMinDescuento = 3, empresa = nike)	//Avellaneda
+	
+
+	
+	const marcaDreamW = new Marca (derechos = true, precioDerechos = 50)
+	const marcaDisney = new Marca (derechos = true, precioDerechos = 100)
+	const marcaMagicK = new Marca (derechos = false)
+	
+	const remeralisa1 = new RemeraLisa(color = "gris" , talle = 40)
+	const remeralisa2 = new RemeraLisa(color = "verde" , talle = 40)
+	const remeralisa3 = new RemeraLisa(color = "gris", talle = 44)
+	const remeralisa4 = new RemeraLisa(color = "verde", talle = 44)
+	const remerabord1 = new RemeraBordada (color = "blanca", talle = 44, cantidadColores = 2)
+	const remerabord2 = new RemeraBordada (color = "blanca", talle = 44, cantidadColores = 4)
+	const remerabord3 = new RemeraBordada (color = "gris", talle = 44, cantidadColores = 0)
+	const remerasubl1 = new RemeraSublimada (color = "blanca", talle = 44, empresaDibujo = marcaDisney, empresa = nike)
+	const remerasubl2 = new RemeraSublimada (color = "blanca", talle = 44, empresaDibujo = marcaMagicK, empresa = nike)
+	const remerasubl3 = new RemeraSublimada (color = "blanca", talle = 44, empresaDibujo = marcaDreamW, empresa = nike)
+	const remerasubl4 = new RemeraSublimada (color = "gris", talle = 44, alto=10, ancho =15, empresaDibujo = marcaDisney, empresa = nike)
+	const remerasubl5 = new RemeraSublimada (color = "blanca", talle = 44, ancho = 0, empresaDibujo = marcaDreamW, empresa = nike)
+	
+	const pedido1 = new Pedido (cantidadRemeras = 5, remeras = remeralisa3, sucursal = sucursalFlores)
+	const pedido2 = new Pedido (cantidadRemeras = 5, remeras = remeralisa3, sucursal = sucursalAvellaneda)
+	const pedido3 = new Pedido (cantidadRemeras = 5, remeras = remeralisa3, sucursal = sucursalFlores)
+	const pedido4 = new Pedido (cantidadRemeras = 5, remeras = remeralisa3, sucursal = sucursalFlores)
+	fixture{
+		pedido1.actualizarPrecio()
+		pedido2.actualizarPrecio()
+		pedido3.actualizarPrecio()
+		pedido4.actualizarPrecio()
+		nike.registrarPedido(pedido1)
+		nike.registrarPedido(pedido2)
+		nike.registrarPedido(pedido3)
+		nike.registrarPedido(pedido4)
+		
+		}
+	
+	test "Una remera color gris de talle 40 cuesta $80,
+		  mientras que el talle 42 cuesta $100. 
+		  En cambio, las mismas remeras en color verde cuestan $88 y $110 respectivamente."{
+		assert.equals(80, remeralisa1.precio())
+		assert.equals(100, remeralisa3.precio())
+		assert.equals(88, remeralisa2.precio())
+		assert.equals(110, remeralisa4.precio())
+	}
+	
+	test "una remera blanca talle 44 con un bordado de un solo color cuesta $120. 
+		  Si el bordado usara hilos de 4 colores distintos costaría $140."{
+		assert.equals(120, remerabord1.precio())
+		assert.equals(140, remerabord2.precio())
+		}
+
+	test "Un sublimado de disney de 10x15 cuesta $175
+		  el total de la remera (gris,42) es de $275"{
+		assert.equals(175, remerasubl4.precioSublimado())
+		assert.equals(275, remerasubl4.precio())
+		}
+		
+	test "Un pedido por 5 remeras lisas grises talle 42 tiene un precio de $500 en Flores
+		  El mismo pedido en Avellaneda se vende a $450"{
+		assert.equals(500,pedido1.precioFinal())
+		assert.equals(450,pedido2.precioFinal())
+		}
+	
+}
